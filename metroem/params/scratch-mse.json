@@ -1,0 +1,104 @@
+{
+   "4": [
+        {
+            "smoothness": 15.0E0,
+            "lr": 3.0E-5,
+            "num_epochs": 400,
+            "loss_spec": {"type": "plain"},
+            "mse_keys_to_apply":{
+                "src": [
+                    {"name": "src",
+                     "fm": 0,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ],
+                "tgt":[
+                    {"name": "tgt",
+                     "fm": 0,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ]
+            },
+            "sm_keys_to_apply": {
+                "src": [
+                    {"name": "src",
+                     "fm": 0,
+                     "mask_value": 1e-5,
+                     "coarsen_ranges": [[1, 0]],
+                     "binarization": {"strat": "neq", "value": 0}}
+                ],
+                "tgt":[
+                    {"name": "tgt",
+                     "binarization": {"strat": "neq", "value": 0},
+                     "coarsen_ranges": [[1, 0]],
+                     "mask_value": 0}
+                ]
+            }
+        }
+    ],
+    "5": [
+        {
+            "smoothness": 40.0E0,
+            "lr": 3.0E-5,
+            "num_epochs": 300,
+            "loss_spec": {"type": "plain"},
+            "mse_keys_to_apply":{
+                "src": [
+                    {"name": "src",
+                     "fm": 0,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ],
+                "tgt":[
+                    {"name": "tgt",
+                     "fm": 0,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ]
+            },
+            "sm_keys_to_apply": {
+                "src": [
+                    {"name": "src",
+                     "fm": 0,
+                     "mask_value": 1e-5,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ],
+                "tgt":[
+                    {"name": "tgt",
+                     "fm": 0,
+                     "binarization": {"strat": "neq", "value": 0}
+                     }
+                ]
+            }
+        }
+    ],
+    "7": [
+        {
+            "smoothness": 100.0E0,
+            "lr": 3.0E-5,
+            "num_epochs": 100,
+            "loss_spec": {"type": "plain"},
+            "mse_keys_to_apply":{
+                "src": [
+                    {"name": "src",
+                     "fm": 0,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ],
+                "tgt":[
+                    {"name": "tgt",
+                     "fm": 0,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ]
+            },
+            "sm_keys_to_apply": {
+                "src": [
+                    {"name": "src",
+                     "fm": 0,
+                     "mask_value": 1e-5,
+                     "binarization": {"strat": "neq", "value": 0}}
+                ],
+                "tgt":[
+                    {"name": "tgt",
+                     "binarization": {"strat": "neq", "value": 0}
+                     }
+                ]
+            }
+        }
+    ]
+}
