@@ -8,14 +8,15 @@ from metroem import loss
 
 from pdb import set_trace as st
 
-def align_sample(model, bundle):
+def align_sample(model, bundle, train=False):
     tgt = bundle['tgt'].unsqueeze(1)
     src = bundle['src'].unsqueeze(1)
 
     src_field = None
     if 'src_field' in bundle:
         src_field = bundle['src_field']
-    pred_res, state = model.forward(src_img=src, tgt_img=tgt, src_agg_field=src_field)
+    pred_res, state = model.forward(src_img=src, tgt_img=tgt, src_agg_field=src_field,
+            return_state=True, train=train)
 
     bundle['pred_tgt'] = pred_res.from_pixels()(src)
     bundle['pred_res'] = pred_res
@@ -28,7 +29,8 @@ def align_sample(model, bundle):
 def aligner_train_loop(model, mip_in, train_loader, val_loader, optimizer,
           print_every=50, num_epochs=1000, loss_fn=None, reverse=True,
           manual_run_transform_def={}, manual_loss_transform_def={},
-          checkpoint_folder='./checkpoints', loss_from_state=False):
+          checkpoint_folder='./checkpoints', loss_from_state=False,
+          augmentor=None):
     times = []
     count = 0
     running_loss = 0.0
@@ -44,11 +46,14 @@ def aligner_train_loop(model, mip_in, train_loader, val_loader, optimizer,
             transform_seed = np.random.randint(10000000)
             np.random.seed(transform_seed)
 
+            if augmentor is not None:
+                bundle = augmentor(bundle)
+
             raw_bundle = copy.deepcopy(bundle)
             run_bundle = raw_bundle
             #run_bundle = apply_transform(raw_bundle, run_transform)
 
-            run_bundle = align_sample(model, run_bundle)
+            run_bundle = align_sample(model, run_bundle, train=True)
 
             np.random.seed(transform_seed)
             raw_bundle = copy.deepcopy(bundle)

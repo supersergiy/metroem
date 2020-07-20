@@ -137,7 +137,7 @@ def load_my_state_dict(model, state_dict, delta=0):
 
 class Aligner(nn.Module):
     def __init__(self, model_folder, pass_field=True, checkpoint_name="checkpoint",
-            finetune=False, finetune_iter=100, finetune_lr=1e-1, finetune_sm=1200e0,
+            finetune=False, finetune_iter=100, finetune_lr=1e-1, finetune_sm=12e2,
             train=False):
         super().__init__()
 
@@ -170,7 +170,6 @@ class Aligner(nn.Module):
             src_img = src_img.unsqueeze(0)
             tgt_img = tgt_img.unsqueeze(0)
         #print ("MSE pre: ", (src_img - tgt_img).abs().mean())
-
         if src_agg_field is not None:
             while len(src_agg_field.shape) < 4:
                 src_agg_field = src_agg_field.unsqueeze(0)
@@ -209,8 +208,8 @@ class Aligner(nn.Module):
             src_opt = embeddings[0, 0:embeddings.shape[1]//2].unsqueeze(0).detach()
             tgt_opt = embeddings[0, embeddings.shape[1]//2:].unsqueeze(0).detach()
             src_defects = src_img == 0
-            #tgt_defects = tgt_img == 0
-            tgt_defects = None
+            tgt_defects = tgt_img == 0
+            #tgt_defects = None
 
             pred_res = finetune_field(src_opt, tgt_opt,
                     pred_res,

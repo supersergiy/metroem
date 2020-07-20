@@ -10,7 +10,7 @@ import re
 import modelhouse
 import torch
 
-from metroem import loss
+from metroem import loss, augmentations
 from metroem.alignment import aligner_train_loop
 from metroem.dataset import MultimipDataset
 
@@ -80,13 +80,20 @@ def train_module(model, train_params, train_dset, val_dset,
                     **loss_spec['params']
                     )
 
+        augmentor = None
+        if "augmentations" in epoch_params:
+            augmentor = augmentations.Augmentor(epoch_params["augmentations"])
+
         train_dset.set_size_limit(num_samples)
         train_data_loader = torch.utils.data.DataLoader(train_dset, batch_size=1, shuffle=True,
                 num_workers=0, pin_memory=False)
+
         optimizer = torch.optim.Adam(trainable, lr=lr, weight_decay=0)
+
         aligner_train_loop(model, 0, train_data_loader, val_data_loader, optimizer,
                 num_epochs=num_epochs, loss_fn=training_loss,
-                print_every=print_every, checkpoint_folder=checkpoint_path)
+                print_every=print_every, checkpoint_folder=checkpoint_path,
+                augmentor=augmentor)
 
     pass
 
