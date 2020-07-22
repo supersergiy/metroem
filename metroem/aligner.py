@@ -137,7 +137,7 @@ def load_my_state_dict(model, state_dict, delta=0):
 
 class Aligner(nn.Module):
     def __init__(self, model_folder, pass_field=True, checkpoint_name="checkpoint",
-            finetune=False, finetune_iter=100, finetune_lr=1e-1, finetune_sm=12e2,
+            finetune=False, finetune_iter=100, finetune_lr=1e-1, finetune_sm=100e0,
             train=False):
         super().__init__()
 
@@ -203,7 +203,7 @@ class Aligner(nn.Module):
                 finetune_lr = self.finetune_lr
             if finetune_sm is None:
                 finetune_sm = self.finetune_sm
-            finetune_sm /= pred_res.abs().max()
+
             embeddings = self.net.state['up']['0']['output']
             src_opt = embeddings[0, 0:embeddings.shape[1]//2].unsqueeze(0).detach()
             tgt_opt = embeddings[0, embeddings.shape[1]//2:].unsqueeze(0).detach()

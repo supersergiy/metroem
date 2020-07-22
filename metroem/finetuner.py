@@ -130,7 +130,7 @@ def optimize_pre_post_ups(src, tgt, initial_res, sm, lr, num_iter,
                 pre_res.grad[pre_res.grad != pre_res.grad] = 0
                 post_res.grad[post_res.grad != post_res.grad] = 0
                 optimizer.step()
-            if lr_halfed_count >= 15:
+            if lr_halfed_count >= 15 or nan_count > 15:
                 break
 
 
