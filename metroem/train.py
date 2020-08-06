@@ -89,7 +89,6 @@ def train_module(model, train_params, train_dset, val_dset,
                 num_workers=0, pin_memory=False)
 
         optimizer = torch.optim.Adam(trainable, lr=lr, weight_decay=0)
-
         aligner_train_loop(model, 0, train_data_loader, val_data_loader, optimizer,
                 num_epochs=num_epochs, loss_fn=training_loss,
                 print_every=print_every, checkpoint_folder=checkpoint_path,
@@ -134,7 +133,6 @@ def train_pyramid(pyramid_path, dataset_path, train_stages, checkpoint_name,
                     finetune=True,
                     pass_field=True,
                     finetune_iter=300//(2**stage),
-                    finetune_lr=1e-1*(1 + stage),
                     checkpoint_name=checkpoint_name)
             dataset.generate_fields(model, mip=module_mip, stage=stage)
             print (f"Done generating fields with module {stage}...")
@@ -172,7 +170,7 @@ def main():
     os.environ["CUDA_VISIBLE_DEVICES"]= args.gpu
 
     if args.redirect_stdout:
-        log_path = os.path.join(args.pyramid_path)
+        log_path = os.path.join(args.pyramid_path, f"{args.checkpoint_name}.log")
         log_file = open(log_path, 'a')
         sys.stdout = log_file
 

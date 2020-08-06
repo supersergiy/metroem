@@ -75,7 +75,7 @@ class MultimipDataset:
 
             for mip in range(self.min_mip, self.max_mip + 1):
                 self.load_img_dset(n, mip)
-
+            '''
             files = glob.glob(os.path.join(self.path, f"field_*{n}*.h5"))
             pattern = re.compile(f"field_(\d+)_{name}_MIP(\d){self.field_tag}.h5")
 
@@ -85,7 +85,7 @@ class MultimipDataset:
                 if match is not None:
                     stage = int(match.group(1))
                     mip = int(match.group(2))
-                    self.load_field_dset(n, mip, stage)
+                    self.load_field_dset(n, mip, stage)'''
 
     def load_img_composite_dset(self, mip):
         dset_list = []
@@ -146,7 +146,7 @@ class MultimipDataset:
 
             field_dset = field_file.create_dataset("main", shape=shape,
                     dtype=np.float32,
-                    chunks=(1, 2, 512, 513)
+                    chunks=(1, 2, 512, 512)
                     )
         else:
             if "main" in field_file:
@@ -198,7 +198,7 @@ class MultimipDataset:
             self._generate_field_dataset(model, img_dset, field_dset, prev_field_dset)
 
     def _generate_field_dataset(self, model, img_dset, field_dset, prev_field_dset):
-        for b in range(min(img_dset.shape[0], 10000000)):
+        for b in range(img_dset.shape[0]):
             src = helpers.to_tensor(img_dset[b, 0])
             tgt = helpers.to_tensor(img_dset[b, 1])
 
@@ -237,6 +237,7 @@ class MultimipDataset:
 
     def get_alignment_dset(self, mip, stage=None, start_index=0, end_index=None,
             crop_mode=None, cropped_size=None):
+
         if self.img_composite_dsets[mip] is None:
             self.load_img_composite_dset(mip)
 
@@ -255,7 +256,7 @@ class MultimipDataset:
     def get_train_dset(self, mip, stage=None, crop_mode='random', cropped_size=1024):
         self.load_img_composite_dset(mip)
         return self.get_alignment_dset(mip, stage=stage,
-                                     start_index=0,
+                                     start_index=len(self.img_coposite_dsets[mi]) - 50,
                                      end_index=len(self.img_composite_dsets[mip]) - 2,
                                      crop_mode=crop_mode, cropped_size=cropped_size)
 

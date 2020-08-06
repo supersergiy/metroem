@@ -3,7 +3,7 @@
         {
             "smoothness": 15.0E0,
             "lr": 1.0E-5, 
-            "num_epochs": 2000, 
+            "num_epochs": 500, 
             "loss_spec": {
                 "type": "metric", 
                 "params": {
@@ -48,7 +48,7 @@
         {
             "smoothness": 25.0E0,
             "lr": 1.0E-5, 
-            "num_epochs": 20000, 
+            "num_epochs": 500, 
             "loss_spec": {
                 "type": "metric", 
                 "params": {
@@ -92,8 +92,8 @@
     "7": [
         {
             "smoothness": 100.0E0,
-            "lr": 1.0E-5, 
-            "num_epochs": 10000, 
+            "lr": 5.0E-6, 
+            "num_epochs": 400, 
             "loss_spec": {
                 "type": "metric", 
                 "params": {

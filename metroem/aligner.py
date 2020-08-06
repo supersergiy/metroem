@@ -137,7 +137,7 @@ def load_my_state_dict(model, state_dict, delta=0):
 
 class Aligner(nn.Module):
     def __init__(self, model_folder, pass_field=True, checkpoint_name="checkpoint",
-            finetune=False, finetune_iter=100, finetune_lr=1e-1, finetune_sm=100e0,
+            finetune=False, finetune_iter=100, finetune_lr=1e-1, finetune_sm=30e0,
             train=False):
         super().__init__()
 
@@ -159,6 +159,7 @@ class Aligner(nn.Module):
             finetune_sm=None,
             train=None,
             return_state=False,
+            final_stage=False,
             **kwargs):
 
         if 'cuda' in str(src_img.device):
@@ -169,7 +170,7 @@ class Aligner(nn.Module):
         while len(src_img.shape) < 4:
             src_img = src_img.unsqueeze(0)
             tgt_img = tgt_img.unsqueeze(0)
-        #print ("MSE pre: ", (src_img - tgt_img).abs().mean())
+
         if src_agg_field is not None:
             while len(src_agg_field.shape) < 4:
                 src_agg_field = src_agg_field.unsqueeze(0)
@@ -179,8 +180,6 @@ class Aligner(nn.Module):
             src_agg_field = src_agg_field.pixels()
         else:
             warped_src_img = src_img
-
-        #print ("MSE post: ", (warped_src_img - tgt_img).abs().mean())
 
         if self.pass_field:
             net_input = torch.cat((src_img, tgt_img), 1).float()
@@ -192,7 +191,8 @@ class Aligner(nn.Module):
         else:
             with torch.no_grad():
                 pred_res = self.net.forward(x=net_input, in_field=src_agg_field)
-        #print ("MSE final: ", (pred_res.field().from_pixels()(warped_src_img) - tgt_img).abs().mean())
+                #print (pred_res.abs().mean())
+
         if not self.pass_field and src_agg_field is not None:
             pred_res = pred_res.field().from_pixels()(src_agg_field).pixels()
 
@@ -203,10 +203,12 @@ class Aligner(nn.Module):
                 finetune_lr = self.finetune_lr
             if finetune_sm is None:
                 finetune_sm = self.finetune_sm
-
+                if final_stage:
+                    finetune_sm *= 10.0e0
             embeddings = self.net.state['up']['0']['output']
             src_opt = embeddings[0, 0:embeddings.shape[1]//2].unsqueeze(0).detach()
             tgt_opt = embeddings[0, embeddings.shape[1]//2:].unsqueeze(0).detach()
+
             src_defects = src_img == 0
             tgt_defects = tgt_img == 0
             #tgt_defects = None
@@ -218,6 +220,7 @@ class Aligner(nn.Module):
                     lr=finetune_lr,
                     num_iter=finetune_iter,
                     sm=finetune_sm)
+
         if return_state:
             return pred_res.field(), self.net.state
         else:
