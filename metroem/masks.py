@@ -179,7 +179,9 @@ def coarsen_mask(mask, n=1, flip=True):
             k = torch.nn.Parameter(data=kernel_var, requires_grad=False)
             if flip:
                 mask = mask.logical_not().float()
-            mask =  (torch.nn.functional.conv2d(mask.unsqueeze(1),
+            while len(mask.shape) < 4:
+                mask = mask.unsqueeze(0)
+            mask =  (torch.nn.functional.conv2d(mask,
                 kernel_var, padding=1) > 1).squeeze(1)
             if flip:
                 mask = mask.logical_not()

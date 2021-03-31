@@ -1,9 +1,10 @@
 {
    "4": [
         {
-            "smoothness": 15.0E0,
+            "smoothness": 25.0E0,
             "lr": 3.0E-5,
-            "num_epochs": 400,
+            "print_every": null,
+            "num_epochs": 4000,
             "loss_spec": {"type": "plain"},
             "mse_keys_to_apply":{
                 "src": [
@@ -114,7 +115,7 @@
                 {"type": "random_transpose", "prob": 0.5},
                 {"type": "random_src_tgt_swap", "prob": 0.5},
                 {"type": "warp", "difficulty": 0, "min_disp": -8, 
-                 "max_disp": 8, "prob": 0.8, "randomize_d": false,
+                 "max_disp": 8, "prob": 0.0, "randomize_d": false,
                  "random_epicenters": false}
             ] 
 

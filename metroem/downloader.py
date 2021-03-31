@@ -117,7 +117,6 @@ def download_dataset(meta, dst_folder, z_start, z_end,
                 tgt_data = np.array(tgt_cv_data).squeeze()
                 if (src_data != 0).sum() == 0:
                     print ('empty slice')
-                    import pdb; pdb.set_trace()
 
                 if data_kind == 'field':
                     tgt_field_offset = profile_field(tgt_data)

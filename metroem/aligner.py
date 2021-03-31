@@ -220,11 +220,23 @@ class Aligner(nn.Module):
                     lr=finetune_lr,
                     num_iter=finetune_iter,
                     sm=finetune_sm)
-
         if return_state:
             return pred_res.field(), self.net.state
         else:
             return pred_res.field()
+
+    def get_embeddings(self, img):
+        while len(img.shape) < 4:
+            img = img.unsqueeze(0)
+
+        net_input = torch.cat((img, img), 1).float()
+
+        with torch.no_grad():
+            self.net.forward(x=net_input)
+
+        emb = self.net.state['up']['0']['output']
+        img_emb = emb[:, 1:emb.shape[1]//2].squeeze()
+        return img_emb
 
     def save_state_dict(self, checkpoint_folder):
         path = os.path.join(checkpoint_folder, f"{self.net.name}.state.pth.tar")

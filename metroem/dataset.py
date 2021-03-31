@@ -256,8 +256,9 @@ class MultimipDataset:
     def get_train_dset(self, mip, stage=None, crop_mode='random', cropped_size=1024):
         self.load_img_composite_dset(mip)
         return self.get_alignment_dset(mip, stage=stage,
-                                     start_index=len(self.img_coposite_dsets[mi]) - 50,
-                                     end_index=len(self.img_composite_dsets[mip]) - 2,
+                start_index=0,
+                                     #start_index=len(self.img_composite_dsets[mip]) - 3,
+                                     end_index=len(self.img_composite_dsets[mip])-2,
                                      crop_mode=crop_mode, cropped_size=cropped_size)
 
     def get_val_dset(self, mip, stage=None, crop_mode='middle', cropped_size=2048):
@@ -310,6 +311,8 @@ class AlignmentDataLoader(torch.utils.data.Dataset):
         img = self.img_dset[self.start_index + i]
         src = helpers.to_tensor(img[..., 0, x_bot:x_top, y_bot:y_top])
         tgt = helpers.to_tensor(img[..., 1, x_bot:x_top, y_bot:y_top])
+        src[src < -4] = 0
+        tgt[tgt < -4] = 0
 
         field = None
         if self.field_dset is not None:

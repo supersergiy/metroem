@@ -22,7 +22,7 @@ def align_sample(model, bundle, train=False):
     bundle['pred_res'] = pred_res
 
     bundle['state'] = state
-
+    #print (pred_res[..., (src != 0).squeeze()].abs().mean())
     return bundle
 
 
@@ -70,7 +70,6 @@ def aligner_train_loop(model, mip_in, train_loader, val_loader, optimizer,
             if loss_var is None or loss_var != loss_var or \
                     loss_var > 1E3:
                 print ("Bad loss", loss_var)
-                import pdb; pdb.set_trace()
                 continue
 
             optimizer.zero_grad()
