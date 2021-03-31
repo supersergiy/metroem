@@ -225,7 +225,9 @@ class Aligner(nn.Module):
         else:
             return pred_res.field()
 
-    def get_embeddings(self, img):
+    def get_embeddings(self, img, level=0, preserve_zeros=False):
+        img = img.squeeze()
+        assert len(img.shape) == 2
         while len(img.shape) < 4:
             img = img.unsqueeze(0)
 
@@ -234,8 +236,14 @@ class Aligner(nn.Module):
         with torch.no_grad():
             self.net.forward(x=net_input)
 
-        emb = self.net.state['up']['0']['output']
-        img_emb = emb[:, 1:emb.shape[1]//2].squeeze()
+        emb = self.net.state['up'][str(level)]['output']
+        img_emb = emb[0, 1:emb.shape[1]//2]
+        if preserve_zeros:
+            mask =  (img == 0).float()
+            while mask.shape[-1] > img_emb.shape[-1]:
+                mask = torch.nn.functional.max_pool2d(mask, 2)
+            mask = mask != 0
+            img_emb[..., mask.squeeze()] = 0
         return img_emb
 
     def save_state_dict(self, checkpoint_folder):
