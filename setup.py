@@ -5,13 +5,12 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="metroem",
-    version="0.0.1",
+    version="0.0.3",
     author="Seung Lab",
     author_email="",
     description="Metric learning optimization pyramid for EM alignment",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/seunglab/metroem",
     include_package_data=True,
     package_data={'': ['*.py']},
     install_requires=[
